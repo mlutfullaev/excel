@@ -8,23 +8,6 @@ const isProd = process.env.NODE_ENV === 'production';
 
 const filename = (ext) => !isProd ? `bundle.${ext}`: `bundle.[hash].${ext}`;
 
-const jsLoader = () => {
-  const loaders = [
-    {
-      loader: 'babel-loader',
-      options: {
-        presets: ['@babel/preset-env'],
-      },
-    },
-  ];
-
-  if (!isProd) {
-    loaders.push('eslint');
-  }
-
-  return loaders;
-};
-
 module.exports = {
   context: path.resolve(__dirname, 'src'),
   mode: 'development',
@@ -69,13 +52,7 @@ module.exports = {
       {
         test: /\.s[ac]ss$/i,
         use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              hmr: !isProd,
-              reloadAll: true,
-            },
-          },
+          !isProd ? 'style-loader' : MiniCssExtractPlugin.loader,
           'css-loader',
           'sass-loader',
         ],
@@ -83,7 +60,14 @@ module.exports = {
       {
         test: /\.m?js$/,
         exclude: /node_modules/,
-        use: jsLoader(),
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
+            },
+          },
+        ],
       },
     ],
   },
