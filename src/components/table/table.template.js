@@ -1,22 +1,36 @@
-const CODES = {
+export const CODES = {
   A: 65,
   Z: 90,
 };
 
-function createCell() {
+function createCell(_, col) {
   return `
-    <div class="cell" contenteditable=""></div>
+    <div
+      data-col="${col}"
+      class="cell"
+      contenteditable=""></div>
   `;
 }
 
-function createColl(content) {
-  return `<div class="column">${content}</div>`;
+function createCol(content) {
+  return `
+   <div
+     class="column"
+     data-index="${content.charCodeAt(0) - CODES.A}"
+     data-type="resizable">
+       ${content}
+     <div class="col-resize" data-resize="col"></div>
+   </div>`;
 }
 
 function createRow(content, index = '') {
   return `
-    <div class="row">
-      <div class="row-info">${index}</div>
+    <div class="row" data-type="resizable">
+      <div class="row-info">
+        ${index
+        ? index + '<div class="row-resize" data-resize="row"></div>'
+        : ''}
+      </div>
       <div class="row-data">${content}</div>
     </div>
   `;
@@ -30,7 +44,7 @@ export function createTable(rowsCount = 15) {
 
   const colls = new Array(colsCount)
       .fill('')
-      .map((_, index) => createColl(toChar(index)))
+      .map((_, index) => createCol(toChar(index)))
       .join('');
   rows.push(createRow(colls));
 
