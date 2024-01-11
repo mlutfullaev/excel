@@ -8,42 +8,43 @@ export class Formula extends ExcelComponent {
     super($root, {
       name: 'Formula',
       listeners: ['input', 'keydown'],
+      subscribe: ['currentText'],
       ...options,
     });
   }
 
   toHTML() {
-    return `     
+    return `
       <div class="info">fx</div>
-      <div
-        class="input"
-        data-type="formula"
-        contenteditable
-        spellcheck="false"></div>
+      <div id="formula" class="input" contenteditable spellcheck="false"></div>
     `;
   }
 
   init() {
     super.init();
-    this.$formula = this.$root.find('[data-type="formula"]');
+
+    this.$formula = this.$root.find('#formula');
 
     this.$on('table:select', ($cell) => {
-      this.$formula.text($cell.text());
+      this.$formula.text($cell.data.value);
     });
-    this.$on('table:input', ($cell) => {
-      this.$formula.text($cell.text());
-    });
+  }
+
+  storeChanged({currentText}) {
+    this.$formula.text(currentText);
   }
 
   onInput(event) {
-    this.$emit('formula:input', $(event.target).text());
+    const text = $(event.target).text();
+    debugger;
+    this.$emit('formula:input', text);
   }
+
   onKeydown(event) {
     const keys = ['Enter', 'Tab'];
-
     if (keys.includes(event.key)) {
       event.preventDefault();
-      this.$emit('formula:enter');
+      this.$emit('formula:done');
     }
   }
 }
