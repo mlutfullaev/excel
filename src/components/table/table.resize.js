@@ -1,9 +1,8 @@
 import {$} from '@core/dom';
 
 export function tableResize(event, $root) {
-  const type = event.target.dataset.resize;
-  if (!type) return;
   const $target = $(event.target);
+  const type = $target.data.resize;
   const $parent = $target.closest('[data-type="resizable"]');
   const coords = $parent.getCoords();
   let value;
