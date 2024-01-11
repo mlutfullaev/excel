@@ -36,7 +36,6 @@ export class Formula extends ExcelComponent {
 
   onInput(event) {
     const text = $(event.target).text();
-    debugger;
     this.$emit('formula:input', text);
   }
 
